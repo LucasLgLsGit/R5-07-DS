@@ -1,0 +1,36 @@
+name: Q2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  archive-toto:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Créer Q2_archive_TOTO.txt avec infos complètes
+        run: |
+          echo "Lucas Langlois" > Q2_archive_TOTO.txt
+          echo "Date et heure d'exécution : $(date '+%Y-%m-%d %H:%M:%S')" >> Q2_archive_TOTO.txt
+          echo "Contenu de TOTO.txt :" >> Q2_archive_TOTO.txt
+          cat TOTO.txt >> Q2_archive_TOTO.txt
+          echo "Taille de TOTO.txt : $(stat --format="%s octets" TOTO.txt)" >> Q2_archive_TOTO.txt
+
+      - name: Configurer Git
+        run: |
+          git config user.name "LucasLgLsGit"
+          git config user.email "lucas.langlois1@etu.univ-lehavre.fr"
+
+      - name: Commit et push du fichier archivé
+        run: |
+          git add Q2_archive_TOTO.txt
+          git commit -m "Archive automatique complète de TOTO.txt"
+          git push
