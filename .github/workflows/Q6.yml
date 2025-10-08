@@ -1,0 +1,57 @@
+name: Q6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  archive-q6:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Créer Q6_archive_JJ-MM-AAAA-HHMMSS.txt
+        run: |
+          DATE=$(date '+%d-%m-%Y-%H%M%S')
+          ARCHIVE="Q6_archive_${DATE}.txt"
+          echo "Lucas Langlois" > $ARCHIVE
+          echo "Contenu de Q6.java :" >> $ARCHIVE
+          cat Q6.java >> $ARCHIVE
+          echo "" >> $ARCHIVE
+          echo "Taille de Q6.java :" >> $ARCHIVE
+          echo "Caractères : $(wc -m < Q6.java)" >> $ARCHIVE
+          echo "Lignes : $(wc -l < Q6.java)" >> $ARCHIVE
+
+      - name: Chercher l’archive précédente
+        id: previous
+        run: |
+          PREVIOUS=$(ls Q6_archive_*.txt | grep -v "${ARCHIVE}" | sort | tail -n 1 || echo "")
+          echo "previous=$PREVIOUS" >> $GITHUB_OUTPUT
+
+      - name: Diff entre les deux
+        run: |
+          ARCHIVE="Q6_archive_$(date '+%d-%m-%Y-%H%M%S').txt"
+          PREVIOUS="${{ steps.previous.outputs.previous }}"
+          if [ -n "$PREVIOUS" ]; then
+            diff "$PREVIOUS" "$ARCHIVE" > Q6_différences.txt || true
+          else
+            echo "Aucune archive précédente trouvée." > Q6_différences.txt
+          fi
+
+      - name: Configurer Git
+        run: |
+          git config user.name "LucasLgLsGit"
+          git config user.email "lucas.langlois1@etu.univ-lehavre.fr"
+
+      - name: Commit et push des fichiers archivés
+        run: |
+          ARCHIVE="Q6_archive_$(date '+%d-%m-%Y-%H%M%S').txt"
+          git add $ARCHIVE Q6_différences.txt
+          git commit -m "Q6.java et diff"
+          git push
