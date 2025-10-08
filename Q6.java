@@ -1,7 +1,7 @@
 public class Q6 {
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Donnez une variable N :");
+            System.out.println("Donnez une variable N svp:");
             return;
         }
         int N = Integer.parseInt(args[0]);
