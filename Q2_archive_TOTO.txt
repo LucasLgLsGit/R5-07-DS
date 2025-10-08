@@ -1,5 +1,5 @@
 Lucas Langlois
-Date et heure d'exécution : 2025-10-08 13:47:15
+Date et heure d'exécution : 2025-10-08 13:50:51
 Contenu de TOTO.txt :
 TOTO
 Taille de TOTO.txt : 5 octets
