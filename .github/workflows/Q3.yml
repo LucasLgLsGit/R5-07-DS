@@ -1,0 +1,34 @@
+name: Q3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  archive-java:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Créer Q3_archive_java.txt avec nom et Q3.java
+        run: |
+          echo "Lucas Langlois" > Q3_archive_java.txt
+          echo "Contenu de Q3.java :" >> Q3_archive_java.txt
+          cat Q3.java >> Q3_archive_java.txt
+
+      - name: Configurer Git
+        run: |
+          git config user.name "LucasLgLsGit"
+          git config user.email "lucas.langlois1@etu.univ-lehavre.fr"
+
+      - name: Commit et push du fichier archivé
+        run: |
+          git add Q3_archive_java.txt
+          git commit -m "Archive automatique de Q3.java"
+          git push
